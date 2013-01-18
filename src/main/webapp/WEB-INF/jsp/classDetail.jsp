@@ -6,7 +6,9 @@
        	<p><a href="javascript:history.go(-1)">Back</a></p>
        	<c:if test="${not empty compilerErrors}">
        		<h3>Compiler Errors:</h3>
-	       	<p>${compilerErrors}</p>
+            <c:forEach items="${compilerErrors}" var="err">
+            		<p>Error in line ${err['line']} : ${err['problem']}</p>
+            </c:forEach>
        	</c:if>
        	<c:if test="${not empty errorMsg}">
        		<h3>Errors</h3>

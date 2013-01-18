@@ -60,11 +60,11 @@ public class ToolingApi {
         if (entity != null) {
             InputStream instream = entity.getContent();
             try {
-            	JSONObject json = (JSONObject)JSONValue.parse(new InputStreamReader(instream));
-
-            	logger.trace("ToolingApi.get response: " + json.toString());
-
-            	return json;
+	            	JSONObject json = (JSONObject)JSONValue.parse(new InputStreamReader(instream));
+	
+	            	logger.trace("ToolingApi.get response: " + json.toString());
+	
+	            	return json;
             } finally {
                 instream.close();
             }
