@@ -12,7 +12,9 @@ public class OAuthConfigChecker implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         //If the environment variables are not set, send them to a "error" page that will tell them to add this to 
     	//their environment
-    	if (System.getenv("SFDC_OAUTH_CLIENT_ID") == null || System.getenv("SFDC_OAUTH_CLIENT_SECRET") == null) {
+    	if (System.getenv("SFDC_OAUTH_CLIENT_ID") == null || 
+            System.getenv("SFDC_OAUTH_CLIENT_SECRET") == null ||
+            System.getenv("SFDC_OAUTH_ENDPOINT") == null ) {
             ((HttpServletResponse)servletResponse).sendRedirect("/sfdcSetup.html");
             return;
         }

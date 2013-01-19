@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Spring MVC and Hibernate Template</title>
+    <title>Force.com Tooling API Demo</title>
 
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,7 +56,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a href="/" class="brand">Spring MVC and Salesforce.com Template</a>
+          <a href="/" class="brand">Force.com Tooling API Demo</a>
           <!--
           IMPORTANT:
           This is Heroku specific markup. Remove to customize.
@@ -70,19 +70,19 @@
     <div class="container" id="getting-started">
       <div class="row">
         <div class="span8 offset2">
-          <h1 class="alert alert-success">Your app is ready!</h1>
-          
          <div class="page-header">
-            <h1>Get started with your Spring MVC Application for Salesforce</h1>
+            <h1>Get started with the Force.com Tooling API</h1>
           </div>
           
           <div style="margin-bottom: 20px">
-            This is a template for a Spring MVC web application to work with data from Salesforce.
-            The sample code is a dynamic CRUD application that allows users to create, read, edit, and delete Contacts in their Salesforce Org.
-            To try it out go to the <a href="/sfdc/contacts">Contacts</a> page. Then use Eclipse or the Command Line to deploy some changes.
+            This is a simple Spring MVC web application that implements a very simple Force.com code browser/editor. The demo allows developers to read, edit, and (soon) create and delete Apex classes.
+            To try it out go to the <a href="/sfdc/classes">Apex Classes</a> page. Then examine the source code to see how the Tooling API works.
           </div>
- 
-          
+
+          <h3>More to come...</h3>
+
+
+        <!--
         <ul id="tab" class="nav nav-tabs">
             <li class="active"><a href="#eclipse-instructions" data-toggle="tab">Use Eclipse 3.7</a></li>
             <li><a href="#cli-instructions" data-toggle="tab">Use Command Line</a></li>
@@ -395,10 +395,9 @@ map.put("contactList",salesforceService.query(
             </div>
           </div>
         </div>
+      -->
       </div>
     </div>
-    
-  <!-- end tab content -->  
   </div>
 
 
