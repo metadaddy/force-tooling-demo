@@ -3,7 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="header.jsp"/>
     <div class="row">
-       	<p><a href="javascript:history.go(-1)">Back</a></p>
+       	<p><a href="../classes">&lt; Class List</a></p>
        	<c:if test="${not empty compilerErrors}">
        		<h3>Compiler Errors:</h3>
             <c:forEach items="${compilerErrors}" var="err">
