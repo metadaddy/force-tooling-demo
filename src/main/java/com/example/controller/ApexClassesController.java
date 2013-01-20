@@ -1,5 +1,8 @@
 package com.example.controller;
 
+import static com.github.ryanbrainard.richsobjects.filters.FilterRichSObjectsByFields.StringFieldsOnly;
+import static com.github.ryanbrainard.richsobjects.filters.FilterRichSObjectsByFields.UpdateableFieldsOnly;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.util.ToolingApi;
+import com.github.ryanbrainard.richsobjects.RichSObject;
 
 @Controller
 @RequestMapping("/classes")
@@ -26,7 +30,7 @@ public class ApexClassesController {
 	public String listClasses(Map<String, Object> map) throws ServletException {
 		try {
 			JSONObject json = ToolingApi
-					.get("query/?q=SELECT+Id,+Name+FROM+ApexClass");
+					.get("query/?q=SELECT+Id,+Name+FROM+ApexClass+ORDER+BY+Name");
 			map.put("records", json.get("records"));
 		} catch (IOException e) {
 			throw new ServletException(e);
@@ -34,6 +38,34 @@ public class ApexClassesController {
 
 		return "classes";
 	}
+
+	@RequestMapping("/c")
+	public String createClassDetail(Map<String, Object> map) {
+		return "createClass";
+	}
+
+    @RequestMapping(method = RequestMethod.POST, value = "/c")
+    public String updateContact(HttpServletRequest request, Map<String, Object> map) throws IOException {
+        final ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(request);
+        final Map<String,String> formData = new FormHttpMessageConverter().read(null, inputMessage).toSingleValueMap();
+        final String name = formData.get("name");
+		final String body = "public class "+name+" {\n\n}";
+        
+        try {
+			JSONObject apexClass = ToolingApi
+					.post("sobjects/ApexClass",
+							"{\"Name\" : \"" + name + "\","
+							+ "\"Body\" : \"" + JSONObject.escape(body)
+							+ "\"}");
+			System.out.println("ApexClass id: "
+					+ apexClass.get("id"));
+
+			return "redirect:" + apexClass.get("id");
+        } catch (RuntimeException e) {
+            map.put("error", e.getMessage()); // TODO: better looking error
+            return "../";
+        }
+    }
 
 	@RequestMapping("/{id}")
 	public String getClassDetail(@PathVariable("id") String id,
@@ -125,4 +157,15 @@ public class ApexClassesController {
 			return "classDetail";
 		}
 	}
+	
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    public String deleteApexClass(@PathVariable("id") String id, Map<String, Object> map) throws ServletException {
+		try {
+			ToolingApi.delete("sobjects/ApexClass/" + id);
+		} catch (IOException e) {
+			throw new ServletException(e);
+		}
+
+        return "OK";
+    }
 }

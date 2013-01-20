@@ -76,7 +76,7 @@
           
           <div style="margin-bottom: 20px">
             <p>
-              This is a simple Spring MVC web application that implements a very simple Force.com code browser/editor. The demo allows developers to read, edit, and (soon) create and delete Apex classes in a Salesforce org.
+              This is a simple Spring MVC web application that implements a very simple Force.com code browser/editor. The demo allows developers to create, read, update and delete Apex classes in a Salesforce org.
             </p>
             <p>
               <i>Note - since the Tooling API is not generally available until <a href="http://developer.force.com/releases/release/Spring13">Spring '13</a>, you will need access to a Spring '13 sandbox or pre-release org</i>. <a href="https://www.salesforce.com/form/signup/prerelease-spring13.jsp"><b>Sign up for pre-release access here</b></a>.
