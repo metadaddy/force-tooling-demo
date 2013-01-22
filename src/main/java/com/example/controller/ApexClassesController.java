@@ -1,8 +1,5 @@
 package com.example.controller;
 
-import static com.github.ryanbrainard.richsobjects.filters.FilterRichSObjectsByFields.StringFieldsOnly;
-import static com.github.ryanbrainard.richsobjects.filters.FilterRichSObjectsByFields.UpdateableFieldsOnly;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.util.ToolingApi;
-import com.github.ryanbrainard.richsobjects.RichSObject;
 
 @Controller
 @RequestMapping("/classes")
@@ -44,35 +40,40 @@ public class ApexClassesController {
 		return "createClass";
 	}
 
-    @RequestMapping(method = RequestMethod.POST, value = "/c")
-    public String updateContact(HttpServletRequest request, Map<String, Object> map) throws IOException {
-        final ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(request);
-        final Map<String,String> formData = new FormHttpMessageConverter().read(null, inputMessage).toSingleValueMap();
-        final String name = formData.get("name");
-		final String body = "public class "+name+" {\n\n}";
-        
-        try {
-			JSONObject apexClass = ToolingApi
-					.post("sobjects/ApexClass",
-							"{\"Name\" : \"" + name + "\","
-							+ "\"Body\" : \"" + JSONObject.escape(body)
-							+ "\"}");
-			System.out.println("ApexClass id: "
-					+ apexClass.get("id"));
+	@SuppressWarnings("unchecked")
+	// Simple JSON uses raw HashMap
+	@RequestMapping(method = RequestMethod.POST, value = "/c")
+	public String updateContact(HttpServletRequest request,
+			Map<String, Object> map) throws IOException {
+		final ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(
+				request);
+		final Map<String, String> formData = new FormHttpMessageConverter()
+				.read(null, inputMessage).toSingleValueMap();
+		final String name = formData.get("name");
+		final String body = "public class " + name + " {\n\n}";
 
-			return "redirect:" + apexClass.get("id");
-        } catch (RuntimeException e) {
-            map.put("error", e.getMessage()); // TODO: better looking error
-            return "../";
-        }
-    }
+		try {
+			JSONObject apexClassRequest = new JSONObject();
+			apexClassRequest.put("Name", name);
+			apexClassRequest.put("Body", body);
+			JSONObject apexClassResponse = ToolingApi.post(
+					"sobjects/ApexClass", apexClassRequest);
+			System.out.println("ApexClass id: " + apexClassResponse.get("id"));
+
+			return "redirect:" + apexClassResponse.get("id");
+		} catch (RuntimeException e) {
+			map.put("error", e.getMessage()); // TODO: better looking error
+			return "../";
+		}
+	}
 
 	@RequestMapping("/{id}")
 	public String getClassDetail(@PathVariable("id") String id,
 			Map<String, Object> map) throws ServletException {
 		try {
-			JSONObject json = ToolingApi.get("sobjects/ApexClass/" + id);
-			map.put("body", json.get("Body"));
+			JSONObject apexClassResponse = ToolingApi.get("sobjects/ApexClass/"
+					+ id);
+			map.put("body", apexClassResponse.get("Body"));
 		} catch (IOException e) {
 			throw new ServletException(e);
 		}
@@ -80,6 +81,8 @@ public class ApexClassesController {
 		return "classDetail";
 	}
 
+	@SuppressWarnings("unchecked")
+	// Simple JSON uses raw HashMap
 	@RequestMapping(method = RequestMethod.POST, value = "/{id}")
 	public String updateClassDetail(@PathVariable("id") String id,
 			HttpServletRequest request, Map<String, Object> map)
@@ -91,31 +94,35 @@ public class ApexClassesController {
 		String body = formData.get("body");
 
 		try {
-			JSONObject metadataContainer = ToolingApi.post(
-					"sobjects/MetadataContainer", "{\"Name\":\"SaveClass" + id
-							+ "\"}");
+			JSONObject metadataContainerRequest = new JSONObject();
+			metadataContainerRequest.put("Name", "SaveClass" + id);
+			JSONObject metadataContainerResponse = ToolingApi.post(
+					"sobjects/MetadataContainer", metadataContainerRequest);
 			System.out.println("MetadataContainer id: "
-					+ metadataContainer.get("id"));
+					+ metadataContainerResponse.get("id"));
 
-			JSONObject apexClassMember = ToolingApi
-					.post("sobjects/ApexClassMember",
-							"{\"MetadataContainerId\":\""
-									+ metadataContainer.get("id") + "\","
-									+ "\"ContentEntityId\" : \"" + id + "\","
-									+ "\"Body\" : \"" + JSONObject.escape(body)
-									+ "\"}");
+			JSONObject apexClassMemberRequest = new JSONObject();
+			apexClassMemberRequest.put("MetadataContainerId",
+					metadataContainerResponse.get("id"));
+			apexClassMemberRequest.put("ContentEntityId", id);
+			apexClassMemberRequest.put("Body", body);
+			JSONObject apexClassMemberResponse = ToolingApi.post(
+					"sobjects/ApexClassMember", apexClassMemberRequest);
 			System.out.println("ApexClassMember id: "
-					+ apexClassMember.get("id"));
+					+ apexClassMemberResponse.get("id"));
 
-			JSONObject containerAsyncRequest = ToolingApi.post(
-					"sobjects/ContainerAsyncRequest",
-					"{\"MetadataContainerId\":\"" + metadataContainer.get("id")
-							+ "\", " + "\"isCheckOnly\" : false}");
+			JSONObject containerAsyncRequest = new JSONObject();
+			containerAsyncRequest.put("MetadataContainerId",
+					metadataContainerResponse.get("id"));
+			containerAsyncRequest.put("isCheckOnly", false);
+			JSONObject containerAsyncResponse = ToolingApi.post(
+					"sobjects/ContainerAsyncRequest", containerAsyncRequest);
 			System.out.println("ContainerAsyncRequest id: "
-					+ containerAsyncRequest.get("id"));
+					+ containerAsyncResponse.get("id"));
 
-			JSONObject result = ToolingApi.get("sobjects/ContainerAsyncRequest/"
-					+ containerAsyncRequest.get("id"));
+			JSONObject result = ToolingApi
+					.get("sobjects/ContainerAsyncRequest/"
+							+ containerAsyncResponse.get("id"));
 			String state = (String) result.get("State");
 			System.out.println("State: " + state);
 			int wait = 1;
@@ -130,21 +137,20 @@ public class ApexClassesController {
 				wait *= 2;
 
 				result = ToolingApi.get("sobjects/ContainerAsyncRequest/"
-						+ containerAsyncRequest.get("id"));
+						+ containerAsyncResponse.get("id"));
 				state = (String) result.get("State");
 				System.out.println("State: " + state);
 			}
 
 			ToolingApi.delete("sobjects/MetadataContainer/"
-					+ metadataContainer.get("id"));
+					+ metadataContainerResponse.get("id"));
 
 			if (state.equals("Completed")) {
 				return "redirect:../classes";
 			} else {
 				map.put("body", body);
 				map.put("errorMsg", result.get("ErrorMsg"));
-				String compilerErrors = (String)result
-						.get("CompilerErrors");
+				String compilerErrors = (String) result.get("CompilerErrors");
 				if (compilerErrors != null) {
 					JSONArray parsedErrors = (JSONArray) JSONValue
 							.parse(compilerErrors);
@@ -157,15 +163,16 @@ public class ApexClassesController {
 			return "classDetail";
 		}
 	}
-	
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public String deleteApexClass(@PathVariable("id") String id, Map<String, Object> map) throws ServletException {
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	public String deleteApexClass(@PathVariable("id") String id,
+			Map<String, Object> map) throws ServletException {
 		try {
 			ToolingApi.delete("sobjects/ApexClass/" + id);
 		} catch (IOException e) {
 			throw new ServletException(e);
 		}
 
-        return "OK";
-    }
+		return "OK";
+	}
 }
