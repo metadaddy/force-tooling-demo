@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -24,10 +25,14 @@ public class ApexClassesController {
 
 	@RequestMapping("")
 	public String listClasses(Map<String, Object> map) throws ServletException {
+		String query = "SELECT Id, Name FROM ApexClass ORDER BY Name";
 		try {
-			JSONObject json = ToolingApi
-					.get("query/?q=SELECT+Id,+Name+FROM+ApexClass+ORDER+BY+Name");
-			map.put("records", json.get("records"));
+			JSONObject queryResponse = ToolingApi.get("query/?q="
+					+ URLEncoder.encode(query, "UTF-8"));
+			System.out.println("Got "
+					+ ((JSONArray) queryResponse.get("records")).size()
+					+ " classes");
+			map.put("records", queryResponse.get("records"));
 		} catch (IOException e) {
 			throw new ServletException(e);
 		}
@@ -40,10 +45,10 @@ public class ApexClassesController {
 		return "createClass";
 	}
 
-	@SuppressWarnings("unchecked")
 	// Simple JSON uses raw HashMap
+	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.POST, value = "/c")
-	public String updateContact(HttpServletRequest request,
+	public String createClass(HttpServletRequest request,
 			Map<String, Object> map) throws IOException {
 		final ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(
 				request);
@@ -81,8 +86,8 @@ public class ApexClassesController {
 		return "classDetail";
 	}
 
-	@SuppressWarnings("unchecked")
 	// Simple JSON uses raw HashMap
+	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.POST, value = "/{id}")
 	public String updateClassDetail(@PathVariable("id") String id,
 			HttpServletRequest request, Map<String, Object> map)
