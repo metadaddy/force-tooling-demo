@@ -1,3 +1,10 @@
+<%
+if (request.getScheme().equals("https")) {
+	// No https CDN versions of bootstrap, so just get the http version of this page 
+	String redirect = "http://"+ request.getServerName()+":"+ getServletContext().getInitParameter("http_port")+"/"+request.getContextPath()+"/";
+	response.sendRedirect(redirect);
+}
+%>
 <!doctype html>
 
 <html>
