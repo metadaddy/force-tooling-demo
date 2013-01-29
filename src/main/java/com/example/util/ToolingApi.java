@@ -3,17 +3,26 @@ package com.example.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
@@ -29,6 +38,7 @@ public class ToolingApi {
 	private static final SfdcApiSessionProvider sessionProvider = getFirstOrThrow(sessionLoader);
 
 	private static final String TOOLING_API = "/services/data/v27.0/tooling/";
+	private static final String FILE_DOWNLOAD = "/servlet/servlet.FileDownload?file=";
 
 	public static JSONObject get(String path) throws IOException {
 		String accessToken = sessionProvider.getAccessToken();
@@ -64,6 +74,46 @@ public class ToolingApi {
 
 		return new JSONObject();
 	}
+	
+	// Get the content for an ApexLog from the id
+	// NOTE - the file download servlet is not a documented or
+	// supported interface. Use at your own risk. You may have
+	// to modify your code to adapt to a future release of the
+	// Tooling API!
+	public static String getFile(String id) throws IOException {
+		String accessToken = sessionProvider.getAccessToken();
+		String apiEndpoint = sessionProvider.getApiEndpoint();
+
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpGet get = new HttpGet(apiEndpoint + FILE_DOWNLOAD + id);
+
+		// set the cookie
+		HttpContext context = new BasicHttpContext();
+		CookieStore cookieStore = new BasicCookieStore(); 
+		BasicClientCookie cookie = new BasicClientCookie("sid", accessToken);
+
+		try {
+			cookie.setDomain((new URI(apiEndpoint)).getHost());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
+		cookie.setPath("/");
+
+		cookieStore.addCookie(cookie); 
+		context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+
+		logger.trace("ToolingApi.getFile id: " + id);
+
+		HttpResponse response = httpclient.execute(get, context);
+
+		logger.trace("ToolingApi.get status: "
+				+ response.getStatusLine().getStatusCode());
+
+		HttpEntity entity = response.getEntity();
+		
+		return (entity != null) ? EntityUtils.toString(entity) : null;
+	}	
 
 	public static void delete(String path) throws IOException {
 		String accessToken = sessionProvider.getAccessToken();

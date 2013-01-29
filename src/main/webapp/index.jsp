@@ -8,15 +8,15 @@
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
-    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css">
+    <link href="//twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="//twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="//twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css">
 
     <!--
     IMPORTANT:
     This is Heroku specific styling. Remove to customize.
     -->
-    <link href="http://heroku.github.com/template-app-bootstrap/heroku.css" rel="stylesheet">
+    <link href="//heroku.github.com/template-app-bootstrap/heroku.css" rel="stylesheet">
     <style type="text/css">
       .instructions { display: none; }
       .instructions li { margin-bottom: 10px; }
@@ -82,7 +82,7 @@
               <i>Note - since the Tooling API is not generally available until <a href="http://developer.force.com/releases/release/Spring13">Spring '13</a>, you will need access to a Spring '13 sandbox or pre-release org</i>. <a href="https://www.salesforce.com/form/signup/prerelease-spring13.jsp"><b>Sign up for pre-release access here</b></a>.
             </p>
             <p>
-              To try it out go to the <a href="/sfdc/classes">Apex Classes</a> page. Then <a href="https://github.com/metadaddy-sfdc/force-tooling-demo">examine the source code</a> to see how the Tooling API works.
+              To try it out go to either the <a href="/sfdc/classes">Apex Classes</a> or the <a href="/sfdc/logs">Apex Logs</a> page. Then <a href="https://github.com/metadaddy-sfdc/force-tooling-demo">examine the source code</a> to see how the Tooling API works.
             </p>
           </div>
 
@@ -411,8 +411,8 @@ map.put("contactList",salesforceService.query(
 
 
 
-    <script src="http://twitter.github.com/bootstrap/assets/js/jquery.js"></script>
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
-    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
+    <script src="//twitter.github.com/bootstrap/assets/js/jquery.js"></script>
+    <script src="//twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+    <script src="//twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
   </body>
 </html>
