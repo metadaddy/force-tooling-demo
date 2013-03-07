@@ -79,9 +79,6 @@
               This is a simple Spring MVC web application that implements a very simple Force.com code browser/editor. The demo allows developers to create, read, update and delete Apex classes in a Salesforce org.
             </p>
             <p>
-              <i>Note - since the Tooling API is not generally available until <a href="http://developer.force.com/releases/release/Spring13">Spring '13</a>, you will need access to a Spring '13 sandbox or pre-release org</i>. <a href="https://www.salesforce.com/form/signup/prerelease-spring13.jsp"><b>Sign up for pre-release access here</b></a>.
-            </p>
-            <p>
               To try it out go to either the <a href="/sfdc/classes">Apex Classes</a> or the <a href="/sfdc/logs">Apex Logs</a> page. Then <a href="https://github.com/metadaddy-sfdc/force-tooling-demo">examine the source code</a> to see how the Tooling API works.
             </p>
           </div>
